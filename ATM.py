@@ -45,7 +45,9 @@ class App(ctk.CTk):
         self.screen_list = [self.login_screen, self.account_creation_screen]
 
         self.add_homescreen_elements(self.account_no, self.user_pin)
-        self.add_account_creation_screen_elements()
+
+        self.name = ctk.StringVar()
+        self.add_account_creation_screen_elements(self.name, self.account_no, self.user_pin)
 
         self.show_screen(self.login_screen)
 
@@ -80,12 +82,33 @@ class App(ctk.CTk):
             "user_not_found" : "Enter the correct account number"
         }
 
-    def add_account_creation_screen_elements(self):
+    def add_account_creation_screen_elements(self, name, account_no, user_pin):
         self.account_creation_screen.columnconfigure(tuple([i for i in range(10)]), weight=1, uniform="a")
         self.account_creation_screen.rowconfigure(tuple([i for i in range(10)]), weight=1)
 
         heading = ctk.CTkLabel(self.account_creation_screen, text="Create Account", fg_color="black", text_color="red", font=("Arial", 16, "bold"))
         heading.grid(row=0, column=4, sticky="nsew", columnspan=2)
+
+        query1 = ctk.CTkLabel(self.account_creation_screen, text="Enter your name", fg_color="yellow", text_color="green", font=("Arial", 16))
+        query1.grid(row=3, column=2, sticky="nsew", columnspan=2)
+
+        name_entry = ctk.CTkEntry(self.account_creation_screen, placeholder_text="Enter your name", corner_radius=8, textvariable=name)
+        name_entry.grid(row=3, column=4, sticky="nsew", columnspan=2)
+
+        create_button = ctk.CTkButton(self.account_creation_screen, text="Register User", command=self.register_user)
+        create_button.grid(row=6, column=4, sticky="nsew", columnspan=2)
+
+        query2 = ctk.CTkLabel(self.account_creation_screen, text="Enter an account number", fg_color="yellow", text_color="green", font=("Arial", 16))
+        query2.grid(row=4, column=2, sticky="nsew", columnspan=2)
+
+        acc_no_entry = ctk.CTkEntry(self.account_creation_screen, placeholder_text="Enter your Account Number", corner_radius=8, textvariable=account_no)
+        acc_no_entry.grid(row=4, column=4, sticky="nsew", columnspan=2)
+
+        query3 = ctk.CTkLabel(self.account_creation_screen, text="Enter a pin", fg_color="yellow", text_color="green", font=("Arial", 16))
+        query3.grid(row=5, column=2, sticky="nsew", columnspan=2)
+
+        pin_entry = ctk.CTkEntry(self.account_creation_screen, placeholder_text="Enter your PIN", corner_radius=8, textvariable=user_pin)
+        pin_entry.grid(row=5, column=4, sticky="nsew")
 
     def show_screen(self, screen):
         for i in self.screen_list:
@@ -103,7 +126,10 @@ class App(ctk.CTk):
             entered_pin = int(self.user_pin.get())
         except ValueError:
             self.show_error_message(self.error_messages["invalid_value"])
-        cur1.execute(f"SELECT * FROM users WHERE account_no = {entered_acc_no}")
+        try:
+            cur1.execute(f"SELECT * FROM users WHERE account_no = {entered_acc_no}")
+        except UnboundLocalError:
+            print("Cannot search for the given account number.")
         try:
             user_credentials = cur1.fetchone()
             if user_credentials[1] == entered_pin:
@@ -116,7 +142,17 @@ class App(ctk.CTk):
     def create_account(self):
         self.show_screen(self.account_creation_screen)
 
-
+    def register_user(self):
+        name = self.name.get()
+        try:
+            entered_acc_no = int(self.account_no.get())
+            entered_pin = int(self.user_pin.get())
+        except ValueError:
+            self.show_error_message(self.error_messages["invalid_value"])
+        try:
+            cur1.execute(f"INSERT INTO users (account_no, pin) VALUES ({entered_acc_no}, {entered_pin})")
+        except UnboundLocalError:
+            print("Error")
 
 app = App()
 app.mainloop()
