@@ -35,23 +35,26 @@ class App(ctk.CTk):
         self.geometry("600x600")
         self.resizable(True, True)
 
+        self.user_authenticated = False
+
+        self.name = ctk.StringVar()
         self.account_no = ctk.StringVar()
         self.user_pin = ctk.StringVar()
 
         # The frames will be displayed by pack()
         self.login_screen = ctk.CTkFrame(self, fg_color="#00A3F1")
         self.account_creation_screen = ctk.CTkFrame(self, fg_color="grey")
+        self.home_screen = ctk.CTkFrame(self, fg_color="purple")
 
-        self.screen_list = [self.login_screen, self.account_creation_screen]
+        self.screen_list = [self.login_screen, self.account_creation_screen, self.home_screen]
 
-        self.add_homescreen_elements(self.account_no, self.user_pin)
-
-        self.name = ctk.StringVar()
+        self.add_login_screen_elements(self.account_no, self.user_pin)
         self.add_account_creation_screen_elements(self.name, self.account_no, self.user_pin)
+        self.add_home_screen_elements()
 
         self.show_screen(self.login_screen)
 
-    def add_homescreen_elements(self, account_no, user_pin):
+    def add_login_screen_elements(self, account_no, user_pin):
 
         self.login_screen.columnconfigure(tuple([i for i in range(10)]), weight=1, uniform="a")
         self.login_screen.rowconfigure(tuple([i for i in range(10)]), weight=1)
@@ -110,6 +113,26 @@ class App(ctk.CTk):
         pin_entry = ctk.CTkEntry(self.account_creation_screen, placeholder_text="Enter your PIN", corner_radius=8, textvariable=user_pin)
         pin_entry.grid(row=5, column=4, sticky="nsew")
 
+    def add_home_screen_elements(self):
+
+        self.home_screen.columnconfigure(tuple([i for i in range(10)]), weight=1, uniform="a")
+        self.home_screen.rowconfigure(tuple([i for i in range(10)]), weight=1)
+
+        query = ctk.CTkLabel(self.home_screen, text="What do you want to do", fg_color="yellow", text_color="orange", font=("Arial",18,"bold"))
+        query.grid(row=2, column=4, columnspan=2, sticky="nsew")
+
+        do_transaction_btn = ctk.CTkButton(self.home_screen, text="Withdraw/Deposit", command=None)
+        do_transaction_btn.grid(row=4, column=3, columnspan=2)
+
+        view_transactions_btn = ctk.CTkButton(self.home_screen, text="View Transactions", fg_color="blue", command=None)
+        view_transactions_btn.grid(row=4, column=5, columnspan=2)
+
+        del_acc_btn = ctk.CTkButton(self.home_screen, text="Delete Account", command=None)
+        del_acc_btn.grid(row=5, column=3, columnspan=2)
+
+        logout_btn = ctk.CTkButton(self.home_screen, text="Logout", command=None)
+        logout_btn.grid(row=5, column=5, columnspan=2)
+
     def show_screen(self, screen):
         for i in self.screen_list:
             i.pack_forget()
@@ -134,6 +157,8 @@ class App(ctk.CTk):
             user_credentials = cur1.fetchone()
             if user_credentials[1] == entered_pin:
                 print("User Authenticated")
+                self.user_authenticated = True
+                self.show_screen(self.home_screen)
             else:
                 print("Wrong Pin")
         except TypeError:
