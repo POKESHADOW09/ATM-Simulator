@@ -8,7 +8,8 @@ cur1 = con1.cursor()
 cur1.execute('''
     CREATE TABLE IF NOT EXISTS users (
         account_no INTEGER PRIMARY KEY,
-        pin INTEGER
+        pin INTEGER,
+        name TEXT
     )
 ''')
 con1.commit()
