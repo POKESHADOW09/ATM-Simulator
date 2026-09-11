@@ -65,7 +65,7 @@ class App(ctk.CTk):
         query = ctk.CTkLabel(self.login_screen, text="How may we help you?", fg_color="yellow", text_color="green", font=("Arial", 16))
         query.grid(row=3, column=4, sticky="nsew", columnspan=2)
         
-        bank_label = ctk.CTkLabel(self.login_screen, text="Kasukabe Bank", fg_color="cyan", text_color="violet", font=("Arial", 16, "bold"))
+        bank_label = ctk.CTkLabel(self.login_screen, text="CCG Bank", fg_color="cyan", text_color="violet", font=("Arial", 16, "bold"))
         bank_label.grid(row=2, column=4, sticky="nsew", columnspan=2)
         
         create_button = ctk.CTkButton(self.login_screen, text="Create Account", command=self.create_account)
@@ -121,16 +121,19 @@ class App(ctk.CTk):
         query = ctk.CTkLabel(self.home_screen, text="What do you want to do", fg_color="yellow", text_color="orange", font=("Arial",18,"bold"))
         query.grid(row=2, column=4, columnspan=2, sticky="nsew")
 
-        do_transaction_btn = ctk.CTkButton(self.home_screen, text="Withdraw/Deposit", command=None)
+        do_transaction_btn = ctk.CTkButton(self.home_screen, text="Withdraw/Deposit", fg_color="blue", command=self.do_transaction)
         do_transaction_btn.grid(row=4, column=3, columnspan=2)
 
         view_transactions_btn = ctk.CTkButton(self.home_screen, text="View Transactions", fg_color="blue", command=None)
         view_transactions_btn.grid(row=4, column=5, columnspan=2)
 
-        del_acc_btn = ctk.CTkButton(self.home_screen, text="Delete Account", command=None)
+        change_credentials = ctk.CTkButton(self.home_screen, text="Change PIN", fg_color="blue", command=self.change_credentials)
+        change_credentials.grid(row=6, column=3, columnspan=2)
+
+        del_acc_btn = ctk.CTkButton(self.home_screen, text="Delete Account", fg_color="blue", command=self.del_account)
         del_acc_btn.grid(row=5, column=3, columnspan=2)
 
-        logout_btn = ctk.CTkButton(self.home_screen, text="Logout", command=None)
+        logout_btn = ctk.CTkButton(self.home_screen, text="Logout", fg_color="blue", command=self.logout)
         logout_btn.grid(row=5, column=5, columnspan=2)
 
     def show_screen(self, screen):
@@ -163,6 +166,8 @@ class App(ctk.CTk):
                 print("Wrong Pin")
         except TypeError:
             self.show_error_message(self.error_messages["user_not_found"])
+        self.account_no.set("")
+        self.user_pin.set("")
 
     def create_account(self):
         self.show_screen(self.account_creation_screen)
@@ -178,6 +183,22 @@ class App(ctk.CTk):
             cur1.execute(f"INSERT INTO users (account_no, pin) VALUES ({entered_acc_no}, {entered_pin})")
         except UnboundLocalError:
             print("Error")
+
+    def do_transaction(self):
+        pass
+
+    def view_transaction(self):
+        pass
+
+    def change_credentials(self):
+        pass
+
+    def del_account(self):
+        pass
+
+    def logout(self):
+        self.user_authenticated = False
+        self.show_screen(self.login_screen)
 
 app = App()
 app.mainloop()
