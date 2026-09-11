@@ -3,29 +3,28 @@ import customtkinter as ctk
 import sqlite3 as sql
 
 # Connecting to database
-con1 = sql.connect("accounts.db")
-cur1 = con1.cursor()
-cur1.execute('''
-    CREATE TABLE IF NOT EXISTS users (
-        account_no INTEGER PRIMARY KEY,
-        pin INTEGER,
-        name TEXT
+con = sql.connect("data.db")
+cur = con.cursor()
+cur.execute('''
+    CREATE TABLE IF NOT EXISTS users 
+    (
+    account_no INTEGER PRIMARY KEY,
+    name TEXT,
+    pin INTEGER
     )
-''')
-con1.commit()
+    '''
+)
 
-con2 = sql.connect("transactions.db")
-cur2 = con2.cursor()
-
-cur2.execute('''
-    CREATE TABLE IF NOT EXISTS transaction_record (
-        transaction_id INTEGER PRIMARY KEY AUTOINCREMENT,
-        account_no INTEGER,
-        amount INTEGER,
-        transaction_type TEXT NOT NULL CHECK (transaction_type IN ('credit', 'debit')) 
+cur.execute('''
+    CREATE TABLE IF NOT EXISTS transaction_record 
+    (
+    transaction_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    account_no INTEGER,
+    transaction_type TEXT NOT NULL CHECK (transaction_type IN ('credit','debit'))
     )
-''')
-con1.commit()
+'''
+)
+con.commit()
 
 class App(ctk.CTk):
 
@@ -154,12 +153,12 @@ class App(ctk.CTk):
         except ValueError:
             self.show_error_message(self.error_messages["invalid_value"])
         try:
-            cur1.execute(f"SELECT * FROM users WHERE account_no = {entered_acc_no}")
+            cur.execute(f"SELECT * FROM users WHERE account_no = {entered_acc_no}")
         except UnboundLocalError:
             print("Cannot search for the given account number.")
         try:
-            user_credentials = cur1.fetchone()
-            if user_credentials[1] == entered_pin:
+            user_credentials = cur.fetchone()
+            if user_credentials[2] == entered_pin:
                 print("User Authenticated")
                 self.user_authenticated = True
                 self.show_screen(self.home_screen)
@@ -181,7 +180,9 @@ class App(ctk.CTk):
         except ValueError:
             self.show_error_message(self.error_messages["invalid_value"])
         try:
-            cur1.execute(f"INSERT INTO users (account_no, pin) VALUES ({entered_acc_no}, {entered_pin})")
+            #cur.execute(f"INSERT INTO users (account_no, name, pin) VALUES ({entered_acc_no}, {name}, {entered_pin})")
+            cur.execute("INSERT INTO users (account_no, name, pin) VALUES (?, ?, ?)", (entered_acc_no, name, entered_pin))
+            con.commit()
         except UnboundLocalError:
             print("Error")
 
