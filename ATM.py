@@ -41,16 +41,20 @@ class App(ctk.CTk):
         self.account_no = ctk.StringVar()
         self.user_pin = ctk.StringVar()
 
+        self.amount = ctk.StringVar()
+
         # The frames will be displayed by pack()
         self.login_screen = ctk.CTkFrame(self, fg_color="#00A3F1")
         self.account_creation_screen = ctk.CTkFrame(self, fg_color="grey")
         self.home_screen = ctk.CTkFrame(self, fg_color="purple")
+        self.do_transaction_screen = ctk.CTkFrame(self, fg_color="pink")
 
-        self.screen_list = [self.login_screen, self.account_creation_screen, self.home_screen]
+        self.screen_list = [self.login_screen, self.account_creation_screen, self.home_screen, self.do_transaction_screen]
 
         self.add_login_screen_elements(self.account_no, self.user_pin)
         self.add_account_creation_screen_elements(self.name, self.account_no, self.user_pin)
         self.add_home_screen_elements()
+        self.add_transaction_screen_elements(self.amount)
 
         self.show_screen(self.login_screen)
 
@@ -136,6 +140,22 @@ class App(ctk.CTk):
         logout_btn = ctk.CTkButton(self.home_screen, text="Logout", fg_color="blue", command=self.logout)
         logout_btn.grid(row=5, column=5, columnspan=2)
 
+    def add_transaction_screen_elements(self, amount):
+        self.do_transaction_screen.columnconfigure(tuple([i for i in range(10)]), weight=1, uniform="a")
+        self.do_transaction_screen.rowconfigure(tuple([i for i in range(10)]), weight=1)
+
+        amount_query = ctk.CTkLabel(self.do_transaction_screen, text="Enter the amount", fg_color="yellow", text_color="orange", font=("Arial",18,"bold"))
+        amount_query.grid(row=3, column=2, columnspan=2)
+
+        amount_entry = ctk.CTkEntry(self.do_transaction_screen, textvariable=amount)
+        amount_entry.grid(row=3, column=4)
+
+        transaction_type_query = ctk.CTkLabel(self.do_transaction_screen, text="Select the type of transaction", fg_color="yellow", text_color="orange", font=("Arial",18,"bold"))
+        transaction_type_query.grid(row=4, column=2, columnspan=2)
+
+        submit_btn = ctk.CTkButton(self.do_transaction_screen, text="Submit",command=None)
+        submit_btn.grid(row=5, column=5)
+
     def show_screen(self, screen):
         for i in self.screen_list:
             i.pack_forget()
@@ -187,7 +207,7 @@ class App(ctk.CTk):
             print("Error")
 
     def do_transaction(self):
-        pass
+        self.show_screen(self.do_transaction_screen)
 
     def view_transaction(self):
         pass
