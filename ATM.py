@@ -43,13 +43,16 @@ class App(ctk.CTk):
 
         self.amount = ctk.StringVar()
 
+        self.transaction_type = ctk.IntVar()
+
         # The frames will be displayed by pack()
         self.login_screen = ctk.CTkFrame(self, fg_color="#00A3F1")
         self.account_creation_screen = ctk.CTkFrame(self, fg_color="grey")
         self.home_screen = ctk.CTkFrame(self, fg_color="purple")
         self.do_transaction_screen = ctk.CTkFrame(self, fg_color="pink")
+        self.change_pin_screen = ctk.CTkFrame(self, fg_color="yellow")
 
-        self.screen_list = [self.login_screen, self.account_creation_screen, self.home_screen, self.do_transaction_screen]
+        self.screen_list = [self.login_screen, self.account_creation_screen, self.home_screen, self.do_transaction_screen, self.change_pin_screen]
 
         self.add_login_screen_elements(self.account_no, self.user_pin)
         self.add_account_creation_screen_elements(self.name, self.account_no, self.user_pin)
@@ -131,7 +134,7 @@ class App(ctk.CTk):
         view_transactions_btn = ctk.CTkButton(self.home_screen, text="View Transactions", fg_color="blue", command=None)
         view_transactions_btn.grid(row=4, column=5, columnspan=2)
 
-        change_credentials = ctk.CTkButton(self.home_screen, text="Change PIN", fg_color="blue", command=self.change_credentials)
+        change_credentials = ctk.CTkButton(self.home_screen, text="Change PIN", fg_color="blue", command=self.change_pin)
         change_credentials.grid(row=6, column=3, columnspan=2)
 
         del_acc_btn = ctk.CTkButton(self.home_screen, text="Delete Account", fg_color="blue", command=self.del_account)
@@ -153,8 +156,21 @@ class App(ctk.CTk):
         transaction_type_query = ctk.CTkLabel(self.do_transaction_screen, text="Select the type of transaction", fg_color="yellow", text_color="orange", font=("Arial",18,"bold"))
         transaction_type_query.grid(row=4, column=2, columnspan=2)
 
+        withdraw_option = ctk.CTkRadioButton(self.do_transaction_screen, variable=self.transaction_type, value=1, text="Withdraw")
+        withdraw_option.grid(row=4, column=4)
+
+        deposit_option = ctk.CTkRadioButton(self.do_transaction_screen, variable=self.transaction_type, value=0, text="Deposit")
+        deposit_option.grid(row=4, column=5)
+
+        back_btn = ctk.CTkButton(self.do_transaction_screen, text="back", command=self.back)
+        back_btn.grid(row=5, column=4)
+
         submit_btn = ctk.CTkButton(self.do_transaction_screen, text="Submit",command=None)
         submit_btn.grid(row=5, column=5)
+
+    def add_change_pin_screen_elements(self):
+        self.change_pin_screen.columnconfigure(tuple([i for i in range(10)]), weight=1, uniform="a")
+        self.change_pin_screen.rowconfigure(tuple([i for i in range(10)]), weight=1, uniform="a")
 
     def show_screen(self, screen):
         for i in self.screen_list:
@@ -212,8 +228,11 @@ class App(ctk.CTk):
     def view_transaction(self):
         pass
 
-    def change_credentials(self):
-        pass
+    def back(self):
+        self.show_screen(self.home_screen)
+
+    def change_pin(self):
+        self.show_screen(self.change_pin_screen)
 
     def del_account(self):
         pass
