@@ -58,6 +58,7 @@ class App(ctk.CTk):
         self.add_account_creation_screen_elements(self.name, self.account_no, self.user_pin)
         self.add_home_screen_elements()
         self.add_transaction_screen_elements(self.amount)
+        self.add_change_pin_screen_elements()
 
         self.show_screen(self.login_screen)
 
@@ -171,6 +172,24 @@ class App(ctk.CTk):
     def add_change_pin_screen_elements(self):
         self.change_pin_screen.columnconfigure(tuple([i for i in range(10)]), weight=1, uniform="a")
         self.change_pin_screen.rowconfigure(tuple([i for i in range(10)]), weight=1, uniform="a")
+
+        q1 = ctk.CTkLabel(self.change_pin_screen, text="Enter old pin", fg_color="yellow", text_color="orange", font=("Arial",18,"bold"))
+        q1.grid(row=2, column=2, columnspan=2, sticky="nsew")
+
+        box1 = ctk.CTkEntry(self.change_pin_screen, placeholder_text="Old pin", textvariable=None)
+        box1.grid(row=2, column=4, columnspan=2, sticky="nsew")
+
+        q2 = ctk.CTkLabel(self.change_pin_screen, text="Enter new pin", fg_color="yellow", text_color="orange", font=("Arial",18,"bold"))
+        q2.grid(row=4, column=2, columnspan=2, sticky="nsew")
+
+        box2 = ctk.CTkEntry(self.change_pin_screen, placeholder_text="Enter new pin", textvariable=None)
+        box2.grid(row=4, column=4, columnspan=2, sticky="nsew")
+
+        sub_btn = ctk.CTkButton(self.change_pin_screen, text="change pin", command=None)
+        sub_btn.grid(row=6, column=5, sticky="nsew")
+
+        back_btn = ctk.CTkButton(self.change_pin_screen, text="back", command=None)
+        back_btn.grid(row=6, column=4, sticky="nsew")
 
     def show_screen(self, screen):
         for i in self.screen_list:
